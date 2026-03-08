@@ -6,8 +6,8 @@ export const ESC_RPC = "https://api.elastos.io/esc";
 export const ESC_BLOCKSCOUT = "https://esc.elastos.io";
 
 // Ethereum Mainnet — Aave V3
-// AaveProtocolDataProvider (has getReserveData(address) with pre-processed values)
-export const AAVE_V3_POOL_DATA = "0x7B4EB56E7CD4b454BA8ff71E4518426c84fd2b6F";
+// AaveProtocolDataProvider — queried from PoolAddressesProvider.getPoolDataProvider()
+export const AAVE_V3_POOL_DATA = "0x0a16f2FCC0D44FaE41cc54e079281D84A363bECD";
 export const WBTC_ADDRESS = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
 
 // === ABI Function Selectors (4-byte keccak prefixes) ===
