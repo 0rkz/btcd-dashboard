@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BTCD Analytics Dashboard
 
-## Getting Started
+Real-time risk analytics for the Elastos BeL2 ecosystem. The first third-party dashboard for BTCD — Bitcoin's stablecoin on the Elastos Smart Chain.
 
-First, run the development server:
+**Live:** [btcd-dashboard.vercel.app](https://btcd-dashboard.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- **BTCD Supply & Holders** — Live on-chain data via ESC RPC and Blockscout
+- **Peg Health Tracking** — Infrastructure ready for DEX pool indexing as BTCD liquidity grows
+- **ELA Market Data** — Price, market cap, and CoinGecko ranking
+- **ESC Chain Health** — Transaction count and block time from Blockscout
+- **BTC Yield Comparison** — Aave V3 WBTC supply/borrow APY (live on-chain reads)
+- **BTCFi Landscape** — TVL comparison across Babylon Genesis, Core, Stacks, BOB, and Elastos
+- **Fault-Tolerant Architecture** — Each data card degrades independently; one API failure doesn't break the dashboard
+
+## Architecture
+
+- **Next.js 14** App Router with Server Components and ISR caching
+- **Zero client-side API calls** — All data fetched server-side, cached via `{ next: { revalidate } }`
+- **Native `fetch()`** for all RPC calls (preserves Next.js ISR cache)
+- **Viem** for ABI decoding only (not network calls)
+- **Recharts** for data visualization
+- **Tailwind CSS** for styling
+
+```
+app/
+  page.tsx            — Main dashboard (server component)
+  layout.tsx          — Root layout, metadata, OG image
+  error.tsx           — SSR error recovery
+  opengraph-image.tsx — Dynamic OG image (edge runtime)
+components/
+  StatCard.tsx        — Reusable metric card
+  PegStatus.tsx       — BTCD peg indicator
+  YieldTable.tsx      — Aave rate comparison
+  TVLChart.tsx        — BTCFi landscape bar chart
+  ChainHealth.tsx     — ESC network stats
+  Phase2Teaser.tsx    — Coming Soon teaser for Phase 2
+  ErrorBoundary.tsx   — Per-card error isolation
+lib/
+  rpc.ts              — Generic JSON-RPC eth_call helper
+  aave.ts             — Aave V3 WBTC rates (compound APY math)
+  blockscout.ts       — BTCD supply + holder count
+  dexscreener.ts      — BTCD price from DEX pools
+  coingecko.ts        — ELA price and market data
+  defillama.ts        — Chain TVL data
+  constants.ts        — Contract addresses, endpoints, selectors
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Data Sources
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Data | Source | Cache |
+|------|--------|-------|
+| BTCD Supply | ESC RPC `totalSupply()` | 60s |
+| Holder Count | Blockscout V2 API | 60s |
+| ELA Price | CoinGecko | 60s |
+| Chain Stats | Blockscout V2 `/stats` | 300s |
+| BTCFi TVL | DeFiLlama `/v2/chains` | 300s |
+| Aave WBTC APY | Ethereum RPC via Alchemy | 300s |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+```bash
+npm install
+cp .env.example .env.local
+# Add your Alchemy RPC URL to .env.local
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+**Environment variables:**
+- `ALCHEMY_RPC_URL` — Ethereum mainnet RPC for Aave V3 data reads
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Phase 2
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Phase 2 (custom smart contract indexer, historical time-series database, and liquidation tracker) is proposed for funding via the Cyber Republic DAO. See [PROPOSAL.md](./PROPOSAL.md) for details.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

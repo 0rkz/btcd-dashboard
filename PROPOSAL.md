@@ -21,6 +21,7 @@ For BeL2 and BTCD to attract serious liquidity from the broader BTCFi market, we
 We believe in delivering value before asking the DAO for treasury funds. We have successfully built and deployed Phase 1 of the dashboard.
 
 **Live URL:** https://btcd-dashboard.vercel.app/
+**Source Code:** https://github.com/0rkz/btcd-dashboard
 
 **Phase 1 Features (Live Today):**
 
